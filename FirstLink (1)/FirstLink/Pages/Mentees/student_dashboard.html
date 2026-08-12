@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="../../CSS/mentees/main.css">
+  <link rel="stylesheet" href="../../CSS/mentees/student_dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard-container">
+
+    <div class="brand">
+      <img src="../../Assets/Logo/uni.png" width="80" height="100" alt="UP logo" id="logo"/>
+      <h1>Welcome back, Student</h1>
+    </div>
+
+    <div class="session-info">
+      <div id="first">
+        <div id="session">
+          <h2>Session</h2>
+          <p>Next Session: 3PM Today</p>
+          <p>Countdown: 01:12:45</p>
+        </div>
+        <div>
+          <button id="join-session">JOIN SESSION</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-box">
+      <h2>Performance Summary</h2>
+      <div class="summary-info">
+        <p>Grades: 72%</p>
+        <p>Attendance: 90%</p>
+      </div>
+    </div>
+
+    <div class="navbar">
+      <a href="student_dashboard.html">Home</a>
+      <a href="checkIn.html">Check-In</a>
+      <a href="progress.html">Progress</a>
+    </div>
+
+  </div>
+
+  <script src="../../Javascript/Authetication.js"></script>
+  <script>checkLogin("mentee");</script>
+</body>
+</html>

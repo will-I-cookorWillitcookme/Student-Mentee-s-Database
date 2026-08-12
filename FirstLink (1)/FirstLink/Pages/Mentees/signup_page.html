@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Mentee Account</title>
+    <link rel="stylesheet" href="../../CSS/mentees/main.css">
+    <link rel="stylesheet" href="../../CSS/mentees/signup_page.css">
+  </head>
+  <body>
+
+    <div class="signup-container">
+
+      <div class="logo-box">
+        <img src="../../Assets/Logo/uni.png" width="70" height="70" alt="UP logo"/>
+      </div>
+
+      <h2 id="create">Create Mentee Account</h2>
+
+      <form class="signup-form" id="signupForm">
+
+        <div class="input-group">
+          <label for="fullname">Full Name</label>
+          <input type="text" id="fullname" name="fullname">
+        </div>
+
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email">
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password">
+        </div>
+
+        <div class="input-group">
+          <label for="confirm-password">Confirm Password</label>
+          <input type="password" id="confirm-password" name="confirm-password">
+        </div>
+
+        <div class="input-group">
+          <label for="subject">Subject</label>
+          <input type="text" id="subject" name="subject">
+        </div>
+
+        <div class="button-group">
+          <button type="button" onclick="registerUser('mentee')">CREATE ACCOUNT</button>
+        </div>
+
+      </form>
+
+      <p class="login-link">
+        Already have an account?
+        <a href="../../index.html">Login</a>
+      </p>
+
+    </div>
+
+    <script src="../../Javascript/Authetication.js"></script>
+  </body>
+</html>

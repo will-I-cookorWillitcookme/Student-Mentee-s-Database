@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Check-In</title>
+  <link rel="stylesheet" href="../../CSS/mentees/main.css">
+  <link rel="stylesheet" href="../../CSS/mentees/checkIn.css">
+  <style>
+    /* ── Feedback banner ── */
+    .risk-feedback {
+      display: none;
+      margin: 16px auto;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: center;
+      max-width: 360px;
+      animation: fadeIn 0.4s ease;
+    }
+    .risk-feedback.success  { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .risk-feedback.stable   { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    .risk-feedback.atrisk   { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+    .score-bar-wrap { margin-top: 8px; background: #e0e0e0; border-radius: 20px; height: 10px; overflow: hidden; }
+    .score-bar      { height: 10px; border-radius: 20px; transition: width 0.8s ease; }
+    .score-bar.success { background: #28a745; }
+    .score-bar.stable  { background: #ffc107; }
+    .score-bar.atrisk  { background: #dc3545; }
+
+    @keyframes fadeIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:none; } }
+  </style>
+</head>
+<body>
+
+  <div class="checkin-container">
+
+    <img src="../../Assets/Logo/uni.png" width="80" height="100" alt="UP logo" id="logo"/>
+    <h2>WEEKLY CHECK-IN</h2>
+
+    <!-- Feedback shown after submit -->
+    <div class="risk-feedback" id="riskFeedback"></div>
+
+    <form id="checkInForm">
+
+      <div class="input-group">
+        <label>Sleep Hours:</label>
+        <select id="sleepHours">
+          <option value="5">5 Hours</option>
+          <option value="6">6 Hours</option>
+          <option value="7" selected>7 Hours</option>
+          <option value="8">8 Hours</option>
+          <option value="9">9 Hours</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>Study Time (hrs/day):</label>
+        <select id="studyHours">
+          <option value="1">1 Hour</option>
+          <option value="2">2 Hours</option>
+          <option value="3" selected>3 Hours</option>
+          <option value="4">4 Hours</option>
+          <option value="5">5+ Hours</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>Assignment Average (%):</label>
+        <input type="number" id="assignmentAvg" min="0" max="100" placeholder="e.g. 68">
+      </div>
+
+      <div class="input-group">
+        <label>Stress Level:</label>
+        <select id="stressLevel">
+          <option value="Low">Low</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label>Motivation Level:</label>
+        <select id="motivationLevel">
+          <option value="Low">Low</option>
+          <option value="Medium" selected>Medium</option>
+          <option value="High">High</option>
+        </select>
+      </div>
+
+      <div class="button-section">
+        <button type="submit">SUBMIT CHECK-IN</button>
+      </div>
+
+    </form>
+
+    <div class="navbar">
+      <a href="student_dashboard.html">Home</a>
+      <a href="checkIn.html">Check-In</a>
+      <a href="progress.html">Progress</a>
+    </div>
+
+  </div>
+
+  <!-- Load auth first, then scoring engine -->
+  <script src="../../Javascript/Authetication.js"></script>
+  <script src="../../Javascript/risk_engine.js"></script>
+  <script>
+    // Guard: only mentees can access this page
+    checkLogin("mentee");
+
+    document.getElementById('checkInForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // ── 1. Grab current mentee from session ──
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser || !currentUser.email) {
+        alert('Session expired. Please log in again.');
+        window.location.href = '../index.html';
+        return;
+      }
+
+      // ── 2. Read form values ──
+      const avg = parseFloat(document.getElementById('assignmentAvg').value);
+      if (isNaN(avg) || avg < 0 || avg > 100) {
+        alert('Please enter a valid assignment average between 0 and 100.');
+        return;
+      }
+
+      const checkInData = {
+        sleepHours:      parseFloat(document.getElementById('sleepHours').value),
+        studyHours:      parseFloat(document.getElementById('studyHours').value),
+        assignmentAvg:   avg,
+        stressLevel:     document.getElementById('stressLevel').value,
+        motivationLevel: document.getElementById('motivationLevel').value,
+      };
+
+      // ── 3. Save to localStorage (keyed by email) ──
+      saveCheckIn(currentUser.email, checkInData);
+
+      // ── 4. Compute risk and show inline feedback ──
+      const result  = computeRisk(checkInData);
+      const fb      = document.getElementById('riskFeedback');
+      fb.style.display = 'block';
+
+      let cls, icon, msg;
+      if (result.band === 'SUCCESS') {
+        cls  = 'success';
+        icon = '✅';
+        msg  = `You're on track! Score: ${result.score}/100 — Keep it up!`;
+      } else if (result.band === 'STABLE') {
+        cls  = 'stable';
+        icon = '⚠️';
+        msg  = `You're stable but watch out. Score: ${result.score}/100`;
+      } else {
+        cls  = 'atrisk';
+        icon = '🚨';
+        msg  = `At risk detected. Score: ${result.score}/100. Your mentor will be notified.`;
+      }
+
+      fb.className = `risk-feedback ${cls}`;
+      fb.innerHTML = `
+        ${icon} ${msg}
+        <div class="score-bar-wrap" style="margin-top:8px;">
+          <div class="score-bar ${cls}" style="width:${result.score}%"></div>
+        </div>
+      `;
+
+      // Reset form after short delay
+      setTimeout(() => { document.getElementById('checkInForm').reset(); }, 3000);
+    });
+  </script>
+</body>
+</html>

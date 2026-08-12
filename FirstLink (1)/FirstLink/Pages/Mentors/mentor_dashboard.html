@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentor Dashboard</title>
+  <link rel="stylesheet" href="../../CSS/mentor/dashboard.css">
+  <link rel="stylesheet" href="../../CSS/mentor/main.css">
+</head>
+<body>
+
+  <div id="navbar">
+    <button id="menuToggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <img src="../../Assets/Logo/uni.png" width="70" height="70" alt="UP logo"/>
+    <h1>Mentor Dashboard</h1>
+  </div>
+
+  <div id="main">
+    <div id="sidebar">
+      <ul>
+        <li><a href="mentor_dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="risk_indicators.html">Risk Indicators</a></li>
+        <li><a href="sessions.html">Sessions &amp; Resources</a></li>
+      </ul>
+    </div>
+    <div id="info">
+      <div class="tabs">
+        <h3>UPCOMING SESSIONS</h3>
+        <div class="tab-info"><p>No sessions so far.</p></div>
+      </div>
+      <div class="tabs">
+        <h3>AT-RISK STUDENTS</h3>
+        <div class="tab-info"><p>Students at risk will appear here.</p></div>
+      </div>
+      <div class="tabs">
+        <h3>QUICK STATS</h3>
+        <div class="tab-info"><p>Information about assigned mentees, their risk level and attendance will appear here.</p></div>
+      </div>
+      <div class="tabs">
+        <h2>Notifications</h2>
+        <div class="tab-info"><p>No notifications available yet.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../Javascript/Authetication.js"></script>
+  <script>checkLogin("mentor");</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sessions &amp; Resources</title>
+  <link rel="stylesheet" href="../../CSS/mentor/main.css">
+  <link rel="stylesheet" href="../../CSS/mentor/sessions.css">
+</head>
+<body>
+
+  <div id="navbar">
+    <img src="../../Assets/Logo/uni.png" width="80" height="100" alt="UP logo"/>
+    <h1>Sessions &amp; Resources</h1>
+  </div>
+
+  <div id="main">
+    <div id="sidebar">
+      <ul>
+        <li><a href="mentor_dashboard.html">Dashboard</a></li>
+        <li><a href="risk_indicators.html">Risk Indicators</a></li>
+        <li><a href="sessions.html" class="active">Sessions &amp; Resources</a></li>
+      </ul>
+    </div>
+
+    <div id="info">
+      <div class="tabs">
+        <h3>SESSIONS</h3>
+        <div class="tab-info">
+          <div class="btn-actions" style="margin-bottom: 15px;">
+            <button class="btn">Generate QR Attendance</button>
+            <button class="btn btn-primary">+ Create Session</button>
+          </div>
+          <p style="font-size: 11px; margin-bottom: 10px;">UPCOMING SESSIONS</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="tabs">
+          <h3>RESOURCES</h3>
+        </div>
+        <div class="tabs">
+          <h3>ACTIVITIES</h3>
+          <button class="btn" style="width: 30%;">+ Add Activity</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../Javascript/Authetication.js"></script>
+  <script>checkLogin("mentor");</script>
+</body>
+</html>

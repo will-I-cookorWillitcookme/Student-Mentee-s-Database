@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risk Indicators</title>
+  <link rel="stylesheet" href="../../CSS/mentor/main.css">
+  <link rel="stylesheet" href="../../CSS/mentor/risk_indicators.css">
+  <style>
+    /* ── Score column ── */
+    .score-cell { font-weight: 700; font-size: 1rem; }
+    .score-mini-bar { width: 80px; height: 8px; background: #e0e0e0; border-radius: 10px; margin-top: 4px; overflow: hidden; }
+    .score-mini-fill { height: 8px; border-radius: 10px; }
+
+    /* Risk badge colours (supplement existing CSS) */
+    .risk-badge.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .risk-badge.stable  { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    .risk-badge.atrisk  { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+    .dot.success { background: #28a745; }
+    .dot.stable  { background: #ffc107; }
+    .dot.atrisk  { background: #dc3545; }
+
+    /* Breakdown tooltip row */
+    .breakdown-row td { font-size: 0.78rem; color: #666; background: #fafafa; padding: 6px 12px; }
+    .breakdown-chips  { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip { padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; background: #e9ecef; color: #333; }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 40px; color: #888; }
+    .empty-state span { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+
+    /* Legend enhancements */
+    .risk-legend { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+
+    /* Filter bar */
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .filter-btn { padding: 5px 14px; border-radius: 20px; border: 1px solid #ccc; background: #fff;
+                  cursor: pointer; font-size: 0.83rem; transition: all 0.2s; }
+    .filter-btn.active        { background: #333; color: #fff; border-color: #333; }
+    .filter-btn.active.atrisk { background: #dc3545; border-color: #dc3545; }
+    .filter-btn.active.stable { background: #ffc107; border-color: #ffc107; color: #333; }
+    .filter-btn.active.success{ background: #28a745; border-color: #28a745; }
+
+    /* Refresh hint */
+    .last-updated { font-size: 0.75rem; color: #aaa; margin-left: auto; }
+  </style>
+</head>
+<body>
+
+  <div id="navbar">
+    <img src="../../Assets/Logo/uni.png" width="80" height="100" alt="UP logo"/>
+    <h1>Risk Indicators</h1>
+  </div>
+
+  <div id="main">
+    <div id="sidebar">
+      <ul>
+        <li><a href="mentor_dashboard.html">Dashboard</a></li>
+        <li><a href="risk_indicators.html" class="active">Risk Indicators</a></li>
+        <li><a href="sessions.html">Sessions &amp; Resources</a></li>
+      </ul>
+    </div>
+
+    <div id="info">
+      <div class="tabs">
+        <h3>OVERVIEW</h3>
+        <div class="tab-info">
+
+          <!-- Legend -->
+          <div class="risk-legend">
+            <span class="legend-label">Risk Levels:</span>
+            <div class="legend-item"><span class="dot atrisk" style="width:10px;height:10px;border-radius:50%;display:inline-block;"></span> At Risk</div>
+            <div class="legend-item"><span class="dot stable"  style="width:10px;height:10px;border-radius:50%;display:inline-block;"></span> Stable</div>
+            <div class="legend-item"><span class="dot success" style="width:10px;height:10px;border-radius:50%;display:inline-block;"></span> Likely to Succeed</div>
+            <span class="last-updated" id="lastUpdated"></span>
+          </div>
+
+          <!-- Filter bar -->
+          <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all"     onclick="applyFilter('all',this)">All</button>
+            <button class="filter-btn"        data-filter="AT RISK" onclick="applyFilter('AT RISK',this)">🚨 At Risk</button>
+            <button class="filter-btn"        data-filter="STABLE"  onclick="applyFilter('STABLE',this)">⚠️ Stable</button>
+            <button class="filter-btn"        data-filter="SUCCESS" onclick="applyFilter('SUCCESS',this)">✅ Likely to Succeed</button>
+          </div>
+
+          <!-- Dynamic risk table -->
+          <table class="risk-table" id="riskTable">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Email</th>
+                <th>Score</th>
+                <th>Risk Level</th>
+                <th>Key Reasons</th>
+                <th>Last Check-In</th>
+              </tr>
+            </thead>
+            <tbody id="riskTableBody">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth guard, then risk engine -->
+  <script src="../../Javascript/Authetication.js"></script>
+  <script src="../../Javascript/risk_engine.js"></script>
+  <script>
+    checkLogin("mentor");
+
+    // ── Render helpers ────────────────────────────────────────
+
+    function bandClass(band) {
+      if (band === 'SUCCESS') return 'success';
+      if (band === 'STABLE')  return 'stable';
+      return 'atrisk';
+    }
+
+    function bandLabel(band) {
+      if (band === 'SUCCESS') return '✅ LIKELY TO SUCCEED';
+      if (band === 'STABLE')  return '⚠️ STABLE';
+      return '🚨 AT RISK';
+    }
+
+    function formatTimestamp(ts) {
+      if (!ts) return '—';
+      const d = new Date(ts);
+      return d.toLocaleDateString('en-ZA', { day:'2-digit', month:'short', year:'numeric' })
+           + ' ' + d.toLocaleTimeString('en-ZA', { hour:'2-digit', minute:'2-digit' });
+    }
+
+    function scoreBarHTML(score, cls) {
+      return `
+        <div class="score-cell">${score}<span style="font-size:0.7rem;color:#999;">/100</span></div>
+        <div class="score-mini-bar">
+          <div class="score-mini-fill" style="width:${score}%;background:${
+            cls==='success'?'#28a745':cls==='stable'?'#ffc107':'#dc3545'
+          };"></div>
+        </div>`;
+    }
+
+    // ── Build table ───────────────────────────────────────────
+
+    let _allRisks = []; // cached for filtering
+
+    function renderTable(risks) {
+      const tbody = document.getElementById('riskTableBody');
+      tbody.innerHTML = '';
+
+      if (risks.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6">
+          <div class="empty-state">
+            <span>📋</span>
+            No check-in data found for this filter.
+          </div>
+        </td></tr>`;
+        return;
+      }
+
+      // Sort: AT RISK first, then STABLE, then SUCCESS
+      const order = { 'AT RISK': 0, 'STABLE': 1, 'SUCCESS': 2 };
+      risks.sort((a, b) => (order[a.band] ?? 9) - (order[b.band] ?? 9));
+
+      risks.forEach(r => {
+        const cls = bandClass(r.band);
+        const row = document.createElement('tr');
+        row.dataset.band = r.band;
+        row.innerHTML = `
+          <td><strong>${escHtml(r.name)}</strong></td>
+          <td style="font-size:0.82rem;color:#555;">${escHtml(r.email)}</td>
+          <td>${scoreBarHTML(r.score, cls)}</td>
+          <td>
+            <span class="risk-badge ${cls}" style="padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:700;display:inline-flex;align-items:center;gap:5px;">
+              ${bandLabel(r.band)}
+            </span>
+          </td>
+          <td style="font-size:0.82rem;">${r.reasons.slice(0,2).map(s=>`<span class="chip">${escHtml(s)}</span>`).join(' ')}</td>
+          <td style="font-size:0.78rem;color:#777;">${formatTimestamp(r.checkIn.timestamp)}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function escHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ── Filter ────────────────────────────────────────────────
+
+    function applyFilter(band, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active','atrisk','stable','success'));
+      btn.classList.add('active');
+      if (band !== 'all') btn.classList.add(bandClass(band));
+
+      const filtered = band === 'all' ? _allRisks : _allRisks.filter(r => r.band === band);
+      renderTable(filtered);
+    }
+
+    // ── Init ──────────────────────────────────────────────────
+
+    function init() {
+      _allRisks = getAllMenteeRisks();
+
+      if (_allRisks.length === 0) {
+        document.getElementById('riskTableBody').innerHTML = `<tr><td colspan="6">
+          <div class="empty-state">
+            <span>📋</span>
+            No mentee check-ins submitted yet.<br>
+            <small>Check-ins will appear here once mentees complete their weekly form.</small>
+          </div>
+        </td></tr>`;
+        return;
+      }
+
+      renderTable(_allRisks);
+
+      // Last-updated hint
+      const timestamps = _allRisks.map(r => r.checkIn.timestamp).filter(Boolean).sort();
+      if (timestamps.length) {
+        document.getElementById('lastUpdated').textContent =
+          'Last updated: ' + formatTimestamp(timestamps[timestamps.length - 1]);
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
