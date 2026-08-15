@@ -1,20 +1,16 @@
 // Authentication System — JSU Mentoring
-// Now backed by Supabase (real database + secure password handling)
-// instead of localStorage.
 
 // ── REGISTER USER ──
-async function registerUser(role) {
+function registerUser(role) {
     const nameEl    = document.getElementById('fullname');
     const emailEl   = document.getElementById('email');
     const pwEl      = document.getElementById('password');
     const confirmEl = document.getElementById('confirm-password');
-    const subjectEl = document.getElementById('subject'); // optional field
 
     const name     = nameEl.value.trim();
     const email    = emailEl.value.trim();
     const password = pwEl.value;
     const confirm  = confirmEl ? confirmEl.value : password;
-    const subject  = subjectEl ? subjectEl.value.trim() : null;
 
     if (!name || !email || !password || !confirm) {
         alert('Please fill in all fields.');
@@ -33,27 +29,16 @@ async function registerUser(role) {
         return;
     }
 
-    // 1. Create the login (Supabase handles password security)
-    const { data, error } = await db.auth.signUp({ email, password });
+    let users = JSON.parse(localStorage.getItem('users')) || [];
 
-    if (error) {
-        alert(error.message);
+    const existing = users.find(u => u.email === email);
+    if (existing) {
+        alert('An account with this email already exists.');
         return;
     }
 
-    // 2. Save the extra profile info (name, role, subject)
-    const { error: profileError } = await db.from('profiles').insert({
-        id: data.user.id,
-        full_name: name,
-        email: email,
-        role: role,
-        subject: subject
-    });
-
-    if (profileError) {
-        alert('Account created, but saving profile failed: ' + profileError.message);
-        return;
-    }
+    users.push({ name, email, password, role });
+    localStorage.setItem('users', JSON.stringify(users));
 
     window.location.href = 'signup_success.html';
 }
@@ -61,7 +46,7 @@ async function registerUser(role) {
 
 // ── LOGIN USER ──
 // Called from either index.html (root) or Pages/index.html
-async function loginUser() {
+function loginUser() {
     const email    = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
 
@@ -70,70 +55,60 @@ async function loginUser() {
         return;
     }
 
-    const { data, error } = await db.auth.signInWithPassword({ email, password });
+    const users     = JSON.parse(localStorage.getItem('users')) || [];
+    const foundUser = users.find(u => u.email === email && u.password === password);
 
-    if (error) {
+    if (!foundUser) {
         alert('Invalid email or password.');
         return;
     }
 
-    // Fetch the matching profile (name, role, subject)
-    const { data: profile, error: profileError } = await db
-        .from('profiles')
-        .select('*')
-        .eq('id', data.user.id)
-        .single();
-
-    if (profileError || !profile) {
-        alert('Logged in, but could not load your profile.');
-        return;
-    }
-
-    // Cache the profile locally so other pages can read it quickly.
-    // (The real session is still managed securely by Supabase.)
-    localStorage.setItem('currentUser', JSON.stringify(profile));
+    localStorage.setItem('currentUser', JSON.stringify(foundUser));
 
     // Determine if called from root index.html or Pages/index.html
     const isFromRoot = window.location.pathname.endsWith('/index.html');
     const isFromPages = window.location.pathname.includes('/Pages/index.html');
-
+    
     let dashboardPath;
     if (isFromPages) {
-        dashboardPath = profile.role === 'mentor'
+        // Called from Pages/index.html — use relative paths to Pages/
+        dashboardPath = foundUser.role === 'mentor' 
             ? './Mentors/mentor_dashboard.html'
             : './Mentees/student_dashboard.html';
     } else {
-        dashboardPath = profile.role === 'mentor'
+        // Called from root index.html — use relative paths to Pages/
+        dashboardPath = foundUser.role === 'mentor' 
             ? './Pages/Mentors/mentor_dashboard.html'
             : './Pages/Mentees/student_dashboard.html';
     }
-
+    
     window.location.href = dashboardPath;
 }
 
 
 // ── LOGOUT USER ──
 // Called from Pages/Mentors/ or Pages/Mentees/ — index.html is one level up
-async function logoutUser() {
-    await db.auth.signOut();
+function logoutUser() {
     localStorage.removeItem('currentUser');
-    window.location.href = '../index.html';
+    // Pages/* pages are two levels deep relative to root index.html
+    window.location.href = '../../index.html';
 }
 
 
 // ── CHECK LOGIN ──
 // Called from Pages/Mentors/ or Pages/Mentees/ — index.html is one level up
-function checkLogin(requiredRole) {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+//function checkLogin(requiredRole) {
+   //const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-    if (!currentUser) {
-        alert('Please log in first.');
-        window.location.href = '../index.html';
-        return;
-    }
+    //if (!currentUser) {
+        //alert('Please log in first.');
+        //Ensure redirect reaches root index.html from Pages/* subfolders
+        //window.location.href = '../../index.html';
+        //return;
+   // }
 
-    if (currentUser.role !== requiredRole) {
-        alert('Access denied.');
-        window.location.href = '../index.html';
-    }
-}
+   // if (currentUser.role !== requiredRole) {
+       // alert('Access denied.');
+        //window.location.href = '../../index.html';
+   // }
+//}

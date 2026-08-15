@@ -3,10 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Mentor Account</title>
-    <!-- Pages/Mentors/ → go up two levels for CSS and Assets -->
-    <link rel="stylesheet" href="../../CSS/mentor/main.css">
-    <link rel="stylesheet" href="../../CSS/mentor/signup_page.css">
+    <title>Create Mentee Account</title>
+    <link rel="stylesheet" href="../../CSS/mentees/main.css">
+    <link rel="stylesheet" href="../../CSS/mentees/signup_page.css">
   </head>
   <body>
 
@@ -16,7 +15,7 @@
         <img src="../../Assets/Logo/uni.png" width="70" height="70" alt="UP logo"/>
       </div>
 
-      <h2 id="create">Create Mentor Account</h2>
+      <h2 id="create">Create Mentee Account</h2>
 
       <form class="signup-form" id="signupForm">
 
@@ -46,7 +45,7 @@
         </div>
 
         <div class="button-group">
-          <button type="button" onclick="registerUser('mentor')">CREATE ACCOUNT</button>
+          <button type="button" onclick="registerUser('mentee')">CREATE ACCOUNT</button>
         </div>
 
       </form>
@@ -58,9 +57,6 @@
 
     </div>
 
-    <!-- Pages/Mentors/ → go up two levels for Javascript -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="../../Javascript/supabaseClient.js"></script>
     <script src="../../Javascript/Authetication.js"></script>
   </body>
 </html>

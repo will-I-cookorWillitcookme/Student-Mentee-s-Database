@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor Chat</title>
+    <link rel="stylesheet" href="../../CSS/mentor/main.css">
+    <link rel="stylesheet" href="../../CSS/mentor/mentorChat.css">
+</head>
+
+<body>
+
+    <div id="navbar">
+        <button id="menuToggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+        <img src="../../Assets/Logo/uni.png" width="70" height="70" alt="UP logo"/>
+        <h1>Mentor Messages</h1>
+    </div>
+
+    <div id="main">
+        <div id="sidebar">
+            <ul>
+                <li><a href="mentor_dashboard.html">Dashboard</a></li>
+                <li><a href="risk_indicators.html">Risk Indicators</a></li>
+                <li><a href="sessions.html">Sessions &amp; Resources</a></li>
+                <li><a href="MentorsPage.html" class="active">Chat</a></li>
+            </ul>
+        </div>
+        <div id="chat-container">
+            <div id="student-list">
+                <h2>Students</h2>
+                <div id="student-search-container">
+                    <input type="text" id="student-search" placeholder="Search students...">
+                </div>
+                <ul>
+                    <!-- populated dynamically by chat.js from /api/mentees/<mentor_username> -->
+                </ul>
+            </div>
+            <div id="conversation">
+                <div class="chat-head">
+                  <div id="chat-header-info">
+                    <h3 id="current-student-name">Select a student</h3>
+                    <span id="student-status" class="status-indicator"></span>
+                  </div>
+                  <button id="refresh-chat" type="button" title="Refresh messages">⟳ Refresh</button>
+                </div>
+                <div class="chatbody">
+                  <!-- populated dynamically by chat.js -->
+                </div>
+                <div id="message-input">
+                        <input type="text" placeholder="Type Message Here..." autocomplete="off">
+                        <button>Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <script src="../../Javascript/Authetication.js"></script>
+     <script>checkLogin("mentor");</script>
+     <script src="../../Javascript/chat.js"></script>
+</body>
+</html>

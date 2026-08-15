@@ -1,7 +1,6 @@
 // ══════════════════════════════════════════════════════════════
 //  risk_engine.js  —  JSU Mentoring  |  Check-In Risk Scorer
-//  Scoring logic is unchanged. Storage now goes to Supabase
-//  instead of localStorage.
+//  Mirrors Python scoring logic using conditional rules.
 // ══════════════════════════════════════════════════════════════
 
 /**
@@ -27,6 +26,7 @@
 // ── Individual field scorers ──────────────────────────────────
 
 function scoreSleep(hours) {
+    // hours is a number parsed from "6 Hours" → 6
     if (hours >= 8)  return 20;
     if (hours === 7) return 14;
     if (hours === 6) return 8;
@@ -42,6 +42,7 @@ function scoreStudy(hours) {
 }
 
 function scoreAssignment(avg) {
+    // avg is a number 0–100
     if (avg >= 75) return 30;
     if (avg >= 60) return 22;
     if (avg >= 50) return 14;
@@ -50,11 +51,13 @@ function scoreAssignment(avg) {
 }
 
 function scoreStress(level) {
+    // level: "Low" | "Medium" | "High"
     const map = { Low: 15, Medium: 8, High: 2 };
     return map[level] ?? 8;
 }
 
 function scoreMotivation(level) {
+    // level: "Low" | "Medium" | "High"
     const map = { Low: 3, Medium: 9, High: 15 };
     return map[level] ?? 9;
 }
@@ -63,6 +66,9 @@ function scoreMotivation(level) {
 
 /**
  * computeRisk(checkIn) → { score, band, reasons, breakdown }
+ *
+ * @param {Object} checkIn  — stored check-in object
+ * @returns {Object}
  */
 function computeRisk(checkIn) {
     const sleep      = parseFloat(checkIn.sleepHours)    || 0;
@@ -79,6 +85,7 @@ function computeRisk(checkIn) {
 
     const score = sleepPts + studyPts + assignmentPts + stressPts + motivPts;
 
+    // ── Risk band ──
     let band;
     if (score >= 70) {
         band = 'SUCCESS';
@@ -88,6 +95,7 @@ function computeRisk(checkIn) {
         band = 'AT RISK';
     }
 
+    // ── Human-readable reasons ──
     const reasons = [];
     if (sleep < 7)          reasons.push(`Low sleep (${sleep}h)`);
     if (study < 3)          reasons.push(`Low study time (${study}h)`);
@@ -107,102 +115,47 @@ function computeRisk(checkIn) {
     };
 }
 
-// ── Storage helpers (now backed by Supabase) ────────────────────
+// ── Storage helpers ───────────────────────────────────────────
+
+const CHECK_IN_KEY = 'checkIns'; // localStorage key
 
 /**
- * Save a mentee's check-in to the check_ins table.
- * Computes the risk score/band and stores it alongside the answers.
+ * Save a mentee's check-in.
+ * Stores an array of check-ins per email so history is preserved.
  */
-async function saveCheckIn(email, data) {
-    // Look up the mentee's profile id from their email
-    const { data: profile, error: profileError } = await db
-        .from('profiles')
-        .select('id')
-        .eq('email', email)
-        .single();
-
-    if (profileError || !profile) {
-        alert('Could not find your profile. Please log in again.');
-        return;
-    }
-
-    const risk = computeRisk(data);
-
-    const { error } = await db.from('check_ins').insert({
-        mentee_id: profile.id,
-        sleep_hours: data.sleepHours,
-        study_hours: data.studyHours,
-        assignment_avg: data.assignmentAvg,
-        stress_level: data.stressLevel,
-        motivation_level: data.motivationLevel,
-        risk_score: risk.score,
-        risk_band: risk.band
-    });
-
-    if (error) {
-        alert('Could not save your check-in: ' + error.message);
-    }
+function saveCheckIn(email, data) {
+    const all = JSON.parse(localStorage.getItem(CHECK_IN_KEY)) || {};
+    if (!all[email]) all[email] = [];
+    all[email].push({ ...data, timestamp: new Date().toISOString() });
+    localStorage.setItem(CHECK_IN_KEY, JSON.stringify(all));
 }
 
 /**
  * Get the latest check-in for a specific mentee email.
  */
-async function getLatestCheckIn(email) {
-    const { data: profile } = await db
-        .from('profiles')
-        .select('id')
-        .eq('email', email)
-        .single();
-
-    if (!profile) return null;
-
-    const { data: entries } = await db
-        .from('check_ins')
-        .select('*')
-        .eq('mentee_id', profile.id)
-        .order('created_at', { ascending: false })
-        .limit(1);
-
-    return entries && entries.length > 0 ? entries[0] : null;
+function getLatestCheckIn(email) {
+    const all = JSON.parse(localStorage.getItem(CHECK_IN_KEY)) || {};
+    const entries = all[email];
+    if (!entries || entries.length === 0) return null;
+    return entries[entries.length - 1];
 }
 
 /**
  * Get all mentees who have submitted at least one check-in,
  * with their latest check-in and computed risk.
- * (Used by the mentor's risk_indicators dashboard.)
  */
-async function getAllMenteeRisks() {
-    // Pull every check-in, newest first, joined with the mentee's profile
-    const { data: rows, error } = await db
-        .from('check_ins')
-        .select('*, profiles!check_ins_mentee_id_fkey(full_name, email)')
-        .order('created_at', { ascending: false });
-
-    if (error || !rows) return [];
-
-    // Keep only the newest row per mentee (rows are already newest-first)
-    const seen = new Set();
-    const latestPerMentee = [];
-    for (const row of rows) {
-        if (seen.has(row.mentee_id)) continue;
-        seen.add(row.mentee_id);
-        latestPerMentee.push(row);
-    }
-
-    return latestPerMentee.map(row => {
-        const checkIn = {
-            sleepHours: row.sleep_hours,
-            studyHours: row.study_hours,
-            assignmentAvg: row.assignment_avg,
-            stressLevel: row.stress_level,
-            motivationLevel: row.motivation_level,
-            timestamp: row.created_at
-        };
-        const risk = computeRisk(checkIn);
+function getAllMenteeRisks() {
+    const all = JSON.parse(localStorage.getItem(CHECK_IN_KEY)) || {};
+    return Object.entries(all).map(([email, entries]) => {
+        const latest = entries[entries.length - 1];
+        const risk   = computeRisk(latest);
+        // Pull name from users list if available
+        const users  = JSON.parse(localStorage.getItem('users')) || [];
+        const user   = users.find(u => u.email === email);
         return {
-            email: row.profiles?.email,
-            name: row.profiles?.full_name || row.profiles?.email,
-            checkIn,
+            email,
+            name:      user ? user.name : email,
+            checkIn:   latest,
             ...risk
         };
     });

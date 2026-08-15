@@ -1,0 +1,451 @@
+#menuToggle {
+    display: none;
+    cursor: pointer;
+    font-size: 1.8rem;
+    color: white;
+    background: none;
+    border: none;
+    margin-right: 3%
+}
+
+#navbar {
+    margin-bottom: 5px;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+}
+
+#main {
+    display: flex;
+    margin-top: 0.5%;
+    align-items: stretch;
+    gap: 10px;
+}
+
+#chat-header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.141);
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+
+.chat-head h3 {
+    font-size: clamp(1.1rem, 4vw, 1.6rem);
+    margin: 0;
+    font-weight: normal;
+}
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #666;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.status-indicator.online {
+    background: #2ecc71;
+    box-shadow: 0 0 8px #2ecc71;
+}
+
+.msg-sender {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 4px;
+    padding: 0 4px;
+}
+
+.msg-timestamp {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.35);
+    margin-top: 2px;
+}
+
+.chatbody {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 10px 0 20px 0;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.msg-row {
+    display: flex;
+    flex-direction: column;
+    max-width: 78%;
+}
+
+.mentor-row {
+    align-self: flex-start;
+    align-items: flex-start;
+}
+
+.you-row {
+    align-self: flex-end;
+    align-items: flex-end;
+}
+
+#sidebar {
+    padding-top: 5%;
+    padding-right: 3%;
+    padding-left: 0;
+    width: 18%;
+    background: rgba(255, 1, 1, 0.05);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.141);
+    border-right-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    margin-right: 5px;
+    align-self: stretch;
+    box-sizing: border-box;
+    text-align: center;
+    box-shadow:
+        inset 0 1px 2px rgba(255, 255, 255, 0.45),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+        0 8px 20px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#sidebar img {
+    margin-right: 35%;
+    margin-left: 35%;
+}
+
+#sidebar a {
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+    text-align: center;
+    font-size: small;
+
+}
+
+#sidebar a:hover {
+    color: rgba(227, 176, 5, 0.8);
+}
+
+#sidebar a.active {
+    text-decoration: none;
+}
+
+#sidebar ul li:hover {
+    transform: translateY(-10px);
+}
+
+#sidebar ul li {
+    margin-bottom: 25%;
+    width: 100%;
+    font-size: small;
+    transform: translateX(0px);
+    transition: center;
+    transition: .3s;
+}
+
+#sidebar ul {
+    list-style-type: none;
+    position: sticky;
+    top: 20px;
+}
+
+#chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 2%;
+    margin-top: 2%;
+    min-width: 0; 
+    min-height: 0; 
+    box-sizing: border-box;
+}
+
+#student-search-container {
+    margin-bottom: 12px;
+}
+
+#student-search {
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.141);
+    border-radius: 20px;
+    color: white;
+    font-family: "Tenor Sans";
+    box-sizing: border-box;
+    font-size: 0.9rem;
+}
+
+#student-search::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+#student-search:focus {
+    outline: none;
+    border-color: rgba(255, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+#student-list {
+    flex-shrink: 0;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 2%;
+    text-align: left;
+    background: rgba(255, 1, 1, 0.05);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.141);
+    border-right-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.45),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+                0 8px 20px rgba(0, 0, 0, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#student-list h2 {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#student-list ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#student-list ul li {
+    margin-bottom: 8px;
+    cursor: pointer;
+    padding: 10px 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+#student-list ul li:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-left-color: rgba(227, 176, 5, 0.8);
+    transform: translateX(4px);
+}
+
+#student-list ul li.active-student {
+    background: rgba(255, 0, 0, 0.2);
+    border-left-color: rgba(255, 0, 0, 0.8);
+    font-weight: 500;
+}
+
+#conversation {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 2%;
+    background: rgba(255, 1, 1, 0.05);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.141);
+    border-right-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    box-sizing: border-box;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.45),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+                0 8px 20px rgba(0, 0, 0, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#conversation h2 {
+    margin-bottom: 10px;
+}
+
+#messages {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    min-height: 0;
+}
+
+#message p {
+    margin-bottom: 10px;
+}
+
+#message-input {
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.141);
+    padding-top: 16px;
+    flex-shrink: 0;
+}
+
+#message-input input {
+    flex: 1;
+    padding: 12px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.141);
+    border-radius: 8px;
+    color: white;
+    font-family: "Tenor Sans";
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+#message-input input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+#message-input input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 0, 0, 0.4);
+}
+
+#message-input button {
+    padding: 12px 24px;
+    background: rgba(255, 0, 0, 0.15);
+    backdrop-filter: blur(15px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.141);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    font-family: "Tenor Sans";
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+#message-input button:hover {
+    background: rgba(255, 0, 0, 0.3);
+    transform: scale(1.02);
+}
+
+#message-input button:active {
+    transform: scale(0.98);
+}
+
+#refresh-chat {
+    padding: 8px 12px;
+    background: rgba(255, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.141);
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-family: "Tenor Sans";
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+#refresh-chat:hover {
+    background: rgba(255, 0, 0, 0.25);
+}
+
+@media (max-width: 1024px) {
+    #sidebar {
+        width: 20%;
+        padding-right: 2%;
+        margin-right: 3%;
+    }
+
+    #sidebar ul li {
+        margin-bottom: 15%;
+        font-size: small;
+    }
+
+    #chat-container {
+        margin-left: 3%;
+    }
+}
+
+@media (max-width: 767px) {
+    #navbar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 3%;
+    }
+
+    #navbar img {
+        margin-left: 0;
+        margin-right: 0;
+        width: 40px;
+        height: 40px;
+    }
+
+    #navbar h1 {
+        flex: 1;
+        text-align: center;
+        font-size: 1.3rem;
+        margin: 0;
+    }
+
+    #menuToggle {
+        display: inline-block;
+        order: -1;
+    }
+
+    #main {
+        flex-direction: column;
+        height: auto;
+    }
+
+    #sidebar {
+        width: 100%;
+    }
+
+    #chat-container {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    #student-list {
+        max-height: 30vh;
+    }
+}
+    }
+
+    #sidebar {
+        display: none;
+        width: 100%;
+        margin: 0 0 15px 0;
+        padding: 40px 0;
+    }
+
+    #sidebar.open {
+        display: block;
+    }
+
+    #sidebar ul {
+        position: static;
+    }
+
+    #sidebar ul li {
+        margin-bottom: 10px;
+    }
+
+    #chat-container {
+        margin-left: 0;
+        width: 100%;
+        padding: 2% 4%;
+    }
+}

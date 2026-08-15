@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Aboreto&family=Cormorant:ital,wght@0,300..700;1,300..700&family=Gupter:wght@400;500;700&family=Italiana&family=Lora:ital,wght@0,400..700;1,400..700&family=Tenor+Sans&display=swap');
+
+
+body {
+    font-family: "Tenor Sans";
+    background-color: black;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+
+
+#navbar,
+#sidebar,
+.tabs,
+.btn {
+    background: rgba(255, 0, 0, 0.1);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.141);
+    border-right-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    box-shadow:
+        inset 0 1px 2px rgba(255, 255, 255, 0.45),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+        0 8px 20px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 0, 0, 0.1);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.141);
+    border-right-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    margin-right: 5px;
+    box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.45),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+        0 8px 20px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ── NAVBAR ── */
+#navbar {
+    display: flex;
+    position: fixed;
+    align-items: center;
+    padding: 10px;;
+    margin-right: 5px;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    font-size: 1.8rem;
+    background: rgba(255, 0, 0, 0.1);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.141);
+    border-right-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.45),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.15),
+        0 8px 20px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#navbar img {
+    margin-right: 35%;
+    margin-left: 5%;
+    width: 80px;
+    height: 100px;
+    object-fit: contain;
+}
+
+#navbar h1 {
+    font-size: 20px;
+    font-weight: normal;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+
+#main {
+    display: flex;
+    padding-top: 120px;
+    width: 90%;
+    position: absolute;
+    left: 5%;
+    top: 60px;
+}
+
+#sidebar {
+    position: fixed;
+    top: 120px;
+    left: 0;
+    width: 20%;
+    height: 100%;
+    padding: 20px 0;
+    flex-shrink: 0;
+    margin: 10px;
+}
+
+#sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#sidebar li {
+    margin-bottom: 10px;
+}
+
+#sidebar a {
+    display: block;
+    padding: 12px 20px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin: 30px;
+    font-size: 1.2rem;
+}
+
+#sidebar a:hover {
+    color: white;
+}
+
+
+#info {
+    margin-left: 220px;
+    padding: 20px 30px;
+    flex: 1;
+}
+
+
+.tabs {
+    margin-bottom: 25px;
+    overflow: hidden;
+    padding: 30px;
+}
+
+
+
+
+.btn {
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: white;
+    font-family: "Tenor Sans";
+}
+
+.btn-primary {
+    background: rgba(158, 42, 42, 0.3);
+}
+
+.btn-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+

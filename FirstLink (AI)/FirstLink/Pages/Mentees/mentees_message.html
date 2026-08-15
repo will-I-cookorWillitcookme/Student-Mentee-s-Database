@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat With Mentor</title>
+    <link rel="stylesheet" href="../../CSS/mentees/main.css">
+    <link rel="stylesheet" href="../../CSS/mentees/mentees_chat.css">
+  </head>
+
+  <body>
+
+    <div id="navbar">
+      <img src="../../Assets/Images/uni.png" width="80" height="100" alt="UP logo"/>
+      <h1>Messages</h1>
+    </div>
+
+    <div class="main">
+
+      <div class="card chat-card">
+        <div class="chat-head">
+          <div id="chat-header-info">
+            <h3 id="mentor-name">Connecting...</h3>
+            <span id="mentor-status" class="status-indicator"></span>
+          </div>
+        </div>
+
+        <div class="chatbody" id="chatbody">
+          <!-- Messages populated dynamically by chat.js -->
+        </div>
+
+        <div class="type-msg">
+          <input type="text" id="message" name="message" class="send-text" placeholder="Type message..." autocomplete="off">
+          <button type="button" class="send-button">Send</button>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <ul>
+          <li><a href="student_dashboard.html">Home</a></li>
+          <li><a href="checkIn.html">Check-In</a></li>
+          <li class="active">Chat</li>
+          <li><a href="progress.html">Progress</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <script src="../../Javascript/Authetication.js"></script>
+    <script>checkLogin("mentee");</script>
+    <script src="../../Javascript/chat.js"></script>
+  </body>
+</html>
